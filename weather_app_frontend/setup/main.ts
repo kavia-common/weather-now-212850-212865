@@ -12,7 +12,7 @@ export default defineAppSetup(({ app }) => {
     registerSlidevComponents(app)
     // Optional console for verification during dev
     // eslint-disable-next-line no-console
-    console.log('[setup] Registered custom Slidev components (WeatherSearch).')
+    console.log('[setup] Registered custom Slidev components: WeatherSearch')
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('[setup] Failed to register components:', e)

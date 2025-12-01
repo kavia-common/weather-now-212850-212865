@@ -17,7 +17,7 @@ css: |
 
 # Weather Now
 
-<div class="title-slide with-hero-glow" style="padding-top: 24px; padding-bottom: 24px;">
+<div class="title-slide with-hero-glow" style="padding-top: 24px; padding-bottom: 24px;" v-cloak>
   <div class="hero-copy" style="width: 100%; max-width: 980px;">
     <h2 class="text-hero" style="margin-bottom: 6px;">
       Ocean Professional Weather
@@ -27,8 +27,7 @@ css: |
     </p>
 
     <div class="mt-2">
-      <!-- Embed the interactive app -->
-      <WeatherSearch />
+      <WeatherSearch/>
     </div>
 
     <div class="subtitle text-xs" style="margin-top: 10px;">
@@ -36,8 +35,6 @@ css: |
     </div>
   </div>
 </div>
-
-<!-- WeatherSearch component is globally registered via components/index.ts -->
 
 ---
 

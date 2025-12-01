@@ -1,2 +1,5 @@
 /* style.css */
 @import "./theme/custom.css";
+
+/* v-cloak utility: hide until Vue is ready */
+[v-cloak] { display: none; }

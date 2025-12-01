@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { fetchWeatherByCity, type CurrentWeatherData } from '../utils/weather';
 
 const city = ref('');
 const loading = ref(false);
 const errorMsg = ref<string | null>(null);
 const result = ref<CurrentWeatherData | null>(null);
+
+onMounted(() => {
+  // eslint-disable-next-line no-console
+  console.debug('[WeatherSearch] component mounted');
+});
 
 function validateCity(input: string): string | null {
   const trimmed = input.trim();
