@@ -40,6 +40,10 @@ function onKeypress(e: KeyboardEvent) {
 
 <template>
   <div class="weather-app">
+    <!-- Mount confirmation header (can be removed later) -->
+    <div class="mounted-banner" role="status" aria-live="polite">
+      WeatherSearch component mounted
+    </div>
     <div class="search-card">
       <h2 class="title">Weather Now</h2>
       <p class="subtitle">Enter a city to view current conditions</p>
@@ -246,6 +250,18 @@ function onKeypress(e: KeyboardEvent) {
 .value {
   font-size: clamp(16px, 1.6vw, 18px);
   font-weight: 700;
+}
+
+.mounted-banner {
+  font-size: 12px;
+  color: var(--muted, var(--theme-text-secondary));
+  background: color-mix(in oklab, var(--primary) 6%, #000);
+  border: 1px solid color-mix(in oklab, var(--primary) 18%, #000);
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  width: min(860px, 100%);
+  text-align: left;
 }
 
 .placeholder-hint {
