@@ -12,7 +12,13 @@ export default defineAppSetup(({ app }) => {
     registerSlidevComponents(app)
     // Optional console for verification during dev
     // eslint-disable-next-line no-console
-    console.log('[setup] Registered custom Slidev components: WeatherSearch')
+    const has = !!(app as any)._context.components?.WeatherSearch
+    console.log('[setup] Registered custom Slidev components: WeatherSearch', { registered: has })
+
+    if (!has) {
+      // eslint-disable-next-line no-console
+      console.warn('[setup] WeatherSearch was not found in app context components. Slides have a local-import fallback, but please verify global registration paths.')
+    }
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('[setup] Failed to register components:', e)

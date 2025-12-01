@@ -45,7 +45,7 @@ function onKeypress(e: KeyboardEvent) {
 
 <template>
   <div class="weather-app">
-    <!-- Mount confirmation header (can be removed later) -->
+    <!-- Mount confirmation header (keep minimal; safe for prod, helpful during debugging) -->
     <div class="mounted-banner" role="status" aria-live="polite">
       WeatherSearch component mounted
     </div>

@@ -17,6 +17,22 @@ css: |
 
 # Weather Now
 
+<!--
+  Ensure Vue compilation in this slide by keeping mdc: true in frontmatter and
+  avoiding raw HTML blocks that might stop Vue processing.
+-->
+
+<script setup>
+/**
+ * Local-import fallback: even if global registration didn’t pick up (e.g. HMR/SSR timing),
+ * this guarantees the component can render on this slide.
+ */
+import WeatherSearch from './components/WeatherSearch.vue'
+
+// Optional: expose from global fallback if available
+const g = (globalThis && (globalThis).__SlidevGlobalComponents__) || null
+</script>
+
 <div class="title-slide with-hero-glow" style="padding-top: 24px; padding-bottom: 24px;" v-cloak>
   <div class="hero-copy" style="width: 100%; max-width: 980px;">
     <h2 class="text-hero" style="margin-bottom: 6px;">
@@ -27,7 +43,8 @@ css: |
     </p>
 
     <div class="mt-2">
-      <WeatherSearch/>
+      <!-- Prefer locally imported component to avoid any auto-registration race -->
+      <WeatherSearch />
     </div>
 
     <div class="subtitle text-xs" style="margin-top: 10px;">
