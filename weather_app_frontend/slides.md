@@ -37,10 +37,7 @@ css: |
   </div>
 </div>
 
-<!-- Register component for this slide -->
-<script setup lang="ts">
-import WeatherSearch from './components/WeatherSearch.vue'
-</script>
+<!-- WeatherSearch component is globally registered via components/index.ts -->
 
 ---
 
