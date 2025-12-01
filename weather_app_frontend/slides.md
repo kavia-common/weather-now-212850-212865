@@ -15,18 +15,32 @@ css: |
   @import "./style.css";
 ---
 
-# PROJECT TITLE
-<div class="title-slide with-hero-glow">
-  <div class="hero-copy">
-    <h2 class="text-hero">Transform Your Business with Innovation</h2>
-    <p class="subtitle text-md">A comprehensive solution for modern enterprises</p>
-    <div class="subtitle text-xs">Presenter Name • Date • contact@example.com</div>
-    <div class="hero-ctas mt-2">
-      <button class="btn-primary">Get Started</button>
-      <button class="btn-secondary">Learn More</button>
+# Weather Now
+
+<div class="title-slide with-hero-glow" style="padding-top: 24px; padding-bottom: 24px;">
+  <div class="hero-copy" style="width: 100%; max-width: 980px;">
+    <h2 class="text-hero" style="margin-bottom: 6px;">
+      Ocean Professional Weather
+    </h2>
+    <p class="subtitle text-md">
+      Search any city to view current conditions
+    </p>
+
+    <div class="mt-2">
+      <!-- Embed the interactive app -->
+      <WeatherSearch />
+    </div>
+
+    <div class="subtitle text-xs" style="margin-top: 10px;">
+      Tip: Press E to open editor • Works great on mobile too
     </div>
   </div>
 </div>
+
+<!-- Register component for this slide -->
+<script setup lang="ts">
+import WeatherSearch from './components/WeatherSearch.vue'
+</script>
 
 ---
 

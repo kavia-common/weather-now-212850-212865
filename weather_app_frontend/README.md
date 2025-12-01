@@ -1,11 +1,19 @@
-# Welcome to [Slidev](https://github.com/slidevjs/slidev)!
+# Weather Now (Slidev)
 
-To start the slide show:
+This Slidev deck includes an interactive weather search UI embedded on the first slide.
 
+Getting started:
 - `pnpm install`
 - `pnpm dev`
-- visit <http://localhost:3030>
+- Visit http://localhost:3030 (or the configured port)
 
-Edit the [slides.md](./slides.md) to see the changes.
+Env vars:
+- VITE_API_BASE or VITE_BACKEND_URL (optional): If set, they will be used as the base URL for API requests. Otherwise, the app falls back to the Open-Meteo public API for demo purposes.
 
-Learn more about Slidev at the [documentation](https://sli.dev/).
+Implementation notes:
+- The app uses `utils/api.ts` to resolve base URLs and perform GET requests.
+- The component `components/WeatherSearch.vue` provides a responsive, modern UI styled with the Ocean Professional palette (#2563EB primary, #F59E0B secondary).
+- Minimal client-side validation, loading states, and error handling are included.
+
+TODO:
+- Replace the placeholder Open-Meteo calls with a dedicated backend endpoint when available and set `VITE_API_BASE` or `VITE_BACKEND_URL` accordingly.
