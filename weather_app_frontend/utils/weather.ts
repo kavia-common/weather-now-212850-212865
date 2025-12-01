@@ -8,12 +8,15 @@ export interface CurrentWeatherData {
   humidity?: number; // optional when unavailable from source
 }
 
-interface OpenMeteoWeatherResp {
-  current?: {
-    temperature_2m?: number;
-    wind_speed_10m?: number;
-    relative_humidity_2m?: number;
-    weather_code?: number;
+interface OpenMeteoForecastResp {
+  current_weather?: {
+    temperature?: number; // °C
+    windspeed?: number; // km/h
+    weathercode?: number;
+  };
+  hourly?: {
+    time?: string[];
+    relative_humidity_2m?: number[];
   };
 }
 
@@ -26,46 +29,70 @@ interface GeocodeItem {
 }
 
 // PUBLIC_INTERFACE
-export async function fetchWeatherByCity(city: string): Promise<{ ok: true; data: CurrentWeatherData } | { ok: false; error: string }> {
+export async function fetchWeatherByCity(
+  city: string
+): Promise<{ ok: true; data: CurrentWeatherData } | { ok: false; error: string }> {
   /**
    * Fetches geocoding results then current weather for the first match.
    * Uses Open-Meteo public APIs as placeholder when no backend is provided.
-   * TODO: Replace with backend aggregation endpoint when available.
+   * Uses widely-supported params: current_weather=true with hourly humidity fallback.
    */
   const cleaned = (city || '').trim();
   if (!cleaned) return { ok: false, error: 'Please enter a city name.' };
   if (cleaned.length < 2) return { ok: false, error: 'City name must be at least 2 characters.' };
 
-  // Use Open-Meteo geocoding to resolve coordinates
-  const geoRes = await apiGet<{ results?: GeocodeItem[] }>('https://geocoding-api.open-meteo.com/v1/search', {
-    name: cleaned,
-    count: 1,
-  });
-
+  // Geocode to coordinates
+  const geoRes = await apiGet<{ results?: GeocodeItem[] }>(
+    'https://geocoding-api.open-meteo.com/v1/search',
+    { name: cleaned, count: 1 }
+  );
   if (!geoRes.ok) return { ok: false, error: geoRes.error || 'Failed to search city.' };
+
   const loc = geoRes.data?.results?.[0];
   if (!loc) return { ok: false, error: 'City not found. Try another search.' };
 
-  // Fetch current weather
-  const weatherRes = await apiGet<OpenMeteoWeatherResp>('forecast', {
+  // Fetch current weather (broadly supported)
+  const weatherRes = await apiGet<OpenMeteoForecastResp>('forecast', {
     latitude: loc.latitude,
     longitude: loc.longitude,
-    current: 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
+    current_weather: true,
+    hourly: 'relative_humidity_2m',
+    timezone: 'auto',
   });
-
   if (!weatherRes.ok) return { ok: false, error: weatherRes.error || 'Failed to fetch weather.' };
 
-  const current = weatherRes.data?.current;
-  if (!current) return { ok: false, error: 'No weather data available.' };
+  const cw = weatherRes.data?.current_weather;
+  if (!cw) return { ok: false, error: 'No weather data available.' };
+
+  // Attempt to match current hour humidity
+  let humidity: number | undefined = undefined;
+  const hourly = weatherRes.data?.hourly;
+  if (
+    hourly?.time &&
+    hourly?.relative_humidity_2m &&
+    hourly.time.length === hourly.relative_humidity_2m.length
+  ) {
+    try {
+      // Compare by hour prefix for a simple, locale-agnostic match
+      const nowIsoHour = new Date().toISOString().slice(0, 13); // e.g. "2025-12-01T13"
+      const idx = hourly.time.findIndex((t) => (t || '').slice(0, 13) === nowIsoHour);
+      if (idx >= 0) {
+        const h = hourly.relative_humidity_2m[idx];
+        if (typeof h === 'number') humidity = h;
+      }
+    } catch {
+      // ignore matching errors and keep humidity undefined
+    }
+  }
 
   return {
     ok: true,
     data: {
       city: [loc.name, loc.admin1, loc.country].filter(Boolean).join(', '),
-      temperature: typeof current.temperature_2m === 'number' ? current.temperature_2m : NaN,
-      wind: typeof current.wind_speed_10m === 'number' ? current.wind_speed_10m : NaN,
-      humidity: typeof current.relative_humidity_2m === 'number' ? current.relative_humidity_2m : undefined,
-      condition: mapWeatherCodeToLabel(current.weather_code),
+      temperature: typeof cw.temperature === 'number' ? cw.temperature : NaN,
+      wind: typeof cw.windspeed === 'number' ? cw.windspeed : NaN,
+      humidity,
+      condition: mapWeatherCodeToLabel(cw.weathercode),
     },
   };
 }
